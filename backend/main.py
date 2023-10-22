@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from logs import get_configured_logging
 from loguru import logger
-from routers import item, items, tickets
+from routers import tickets
 
 models.Base.metadata.create_all(bind=engine)
 
