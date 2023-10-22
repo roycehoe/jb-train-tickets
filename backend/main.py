@@ -5,7 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from logs import get_configured_logging
 from loguru import logger
-from routers import atlas, item, items
+from routers import item, items, tickets
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -28,4 +28,4 @@ app.add_middleware(
 get_configured_logging()
 
 
-app.include_router(atlas.router)
+app.include_router(tickets.router)
