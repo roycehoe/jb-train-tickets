@@ -15,6 +15,7 @@ app = FastAPI(docs_url="/docs")
 CORS_ALLOWED_ORIGINS = [  # location where your frontend is running
     "http://localhost:3000",
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 app.add_middleware(

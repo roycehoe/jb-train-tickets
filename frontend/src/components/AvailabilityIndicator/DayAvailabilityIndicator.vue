@@ -3,11 +3,12 @@ import { Err, Ok, Result } from "ts-results";
 import { Ref, onBeforeMount, ref, watch } from "vue";
 import { client } from "../../services";
 
-export interface AtlasAvailabilityData {
-  date: string;
-  time: string;
-  is_available: boolean;
-  dining_type: string;
+export interface TicketAvailabilityData {
+  departure_time: string,
+  arrival_time: string,
+  duration: string,
+  seat_count: string,
+  price: string
 }
 
 const props = defineProps<{
@@ -15,67 +16,56 @@ const props = defineProps<{
   timeslots: string[];
 }>();
 const isLoading: Ref<boolean> = ref(false);
-const availabilities: Ref<AtlasAvailabilityData[]> = ref([]);
+const availabilities: Ref<TicketAvailabilityData[]> = ref([]);
 const day: Ref<Date> = ref(props.date);
 const timeslots: Ref<string[]> = ref(props.timeslots);
 const noDataFromApi: Ref<boolean> = ref(false);
 
-async function getAtlasAvailabilityResponse(
+async function getTicketAvailabilityResponse(
   date: string
-): Promise<Result<AtlasAvailabilityData[], any>> {
+): Promise<Result<TicketAvailabilityData[], any>> {
   try {
     const response = await client.get(date);
-    return Ok(response.data as AtlasAvailabilityData[]);
+    return Ok(response.data as TicketAvailabilityData[]);
   } catch (error) {
     return Err(error);
   }
 }
 
 function getApiFormattedDate(date: Date): string {
-  const day = date.getDate();
+  const day = ('0' + date.getDate()).slice(-2)
   const month = date.getMonth() + 1;
   const year = date.getFullYear();
 
-  return `${day}-${month}-${year}`;
+  return `${year}-${month}-${day}`;
 }
+
 function isAvailableForDrinks(timeslot: string) {
   const timeslotData = availabilities.value
     .filter((availability) => {
-      return availability.time === timeslot;
+      return availability.departure_time === timeslot && availability.seat_count !== "0";
     })
-    .filter((availability) => {
-      return (
-        availability.dining_type === "Drinks" ||
-        availability.dining_type === "Cocktails"
-      );
-    });
   return timeslotData.length !== 0;
 }
 
-function isAvailableForNonDrinks(timeslot: string) {
+function getTooltip(timeslot: string) {
   const timeslotData = availabilities.value
     .filter((availability) => {
-      return availability.time === timeslot;
+      return availability.departure_time === timeslot
     })
-    .filter((availability) => {
-      return (
-        availability.dining_type !== "Drinks" &&
-        availability.dining_type !== "Cocktails" &&
-        availability.dining_type !== "NA"
-      );
-    });
-  return timeslotData.length !== 0;
+  return timeslotData[0].seat_count;
 }
 
 async function loadPage() {
   isLoading.value = true;
   const apiFormattedDate = getApiFormattedDate(day.value);
-  const response = await getAtlasAvailabilityResponse(apiFormattedDate);
+  const response = await getTicketAvailabilityResponse(apiFormattedDate);
   if (response.ok) {
     availabilities.value = response.val;
   } else {
     noDataFromApi.value = true;
   }
+  console.log(availabilities.value)
   isLoading.value = false;
 }
 
@@ -97,13 +87,7 @@ watch(props, async (newProps) => {
       <div
         v-else-if="isAvailableForDrinks(timeslot)"
         class="tooltip w-4 h-4 bg-success rounded-sm"
-        :data-tip="timeslot"
-      ></div>
-
-      <div
-        v-else-if="isAvailableForNonDrinks(timeslot)"
-        class="tooltip w-4 h-4 bg-primary rounded-sm"
-        :data-tip="timeslot"
+        :data-tip="getTooltip(timeslot)"
       ></div>
 
       <div

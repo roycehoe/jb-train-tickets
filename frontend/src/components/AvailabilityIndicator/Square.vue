@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Ref, ref } from "vue";
-import { AtlasAvailabilityData } from "./DayAvailabilityIndicator.vue";
+import { TicketAvailabilityData } from "./DayAvailabilityIndicator.vue";
 
 const props = defineProps<{
   isLoading: boolean;
@@ -9,8 +9,8 @@ const props = defineProps<{
   isAvailableForNonDrinks: boolean;
 }>();
 
-const atlasAvailabilityData: Ref<AtlasAvailabilityData> = ref(
-  {} as AtlasAvailabilityData
+const atlasAvailabilityData: Ref<TicketAvailabilityData> = ref(
+  {} as TicketAvailabilityData
 );
 
 const content: Ref<string> = ref(props.content);
