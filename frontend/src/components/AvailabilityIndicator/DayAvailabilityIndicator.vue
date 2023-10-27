@@ -62,7 +62,7 @@ function getTooltip(timeslot: string) {
   const timeslotData = availabilities.value.filter((availability) => {
     return availability.departure_time === timeslot;
   });
-  return timeslotData[0].seat_count;
+  return `${timeslotData[0].seat_count} seats at ${timeslot}`;
 }
 
 async function loadPage() {
@@ -101,7 +101,7 @@ watch(props, async (newProps) => {
       <div
         v-else
         class="tooltip w-4 h-4 bg-neutral rounded-sm"
-        :data-tip="timeslot"
+        :data-tip="getTooltip(timeslot)"
       ></div>
     </li>
   </ul>
