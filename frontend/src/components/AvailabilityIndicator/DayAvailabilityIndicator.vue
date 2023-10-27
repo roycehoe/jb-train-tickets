@@ -4,11 +4,11 @@ import { Ref, onBeforeMount, ref, watch } from "vue";
 import { client } from "../../services";
 
 export interface TicketAvailabilityData {
-  departure_time: string,
-  arrival_time: string,
-  duration: string,
-  seat_count: string,
-  price: string
+  departure_time: string;
+  arrival_time: string;
+  duration: string;
+  seat_count: string;
+  price: string;
 }
 
 const props = defineProps<{
@@ -33,26 +33,27 @@ async function getTicketAvailabilityResponse(
 }
 
 function getApiFormattedDate(date: Date): string {
-  const day = ('0' + date.getDate()).slice(-2)
-  const month = date.getMonth() + 1;
+  const day = ("0" + date.getDate()).slice(-2);
+  const month = ("0" + date.getMonth()).slice(-2);
   const year = date.getFullYear();
 
   return `${year}-${month}-${day}`;
 }
 
 function isAvailableForDrinks(timeslot: string) {
-  const timeslotData = availabilities.value
-    .filter((availability) => {
-      return availability.departure_time === timeslot && availability.seat_count !== "0";
-    })
+  const timeslotData = availabilities.value.filter((availability) => {
+    return (
+      availability.departure_time === timeslot &&
+      availability.seat_count !== "0"
+    );
+  });
   return timeslotData.length !== 0;
 }
 
 function getTooltip(timeslot: string) {
-  const timeslotData = availabilities.value
-    .filter((availability) => {
-      return availability.departure_time === timeslot
-    })
+  const timeslotData = availabilities.value.filter((availability) => {
+    return availability.departure_time === timeslot;
+  });
   return timeslotData[0].seat_count;
 }
 
@@ -65,7 +66,7 @@ async function loadPage() {
   } else {
     noDataFromApi.value = true;
   }
-  console.log(availabilities.value)
+  console.log(availabilities.value);
   isLoading.value = false;
 }
 
