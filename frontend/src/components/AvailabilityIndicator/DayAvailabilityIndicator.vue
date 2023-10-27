@@ -11,21 +11,13 @@ export interface TicketAvailabilityData {
   price: string;
 }
 
-enum TrainDirection {
-  SINGAPORE_TO_JB = 1,
-  JB_TO_SINGAPORE = 2
-}
-
 const props = defineProps<{
-  direction: TrainDirection;
   date: Date;
   timeslots: string[];
 }>();
-
 const isLoading: Ref<boolean> = ref(false);
 const availabilities: Ref<TicketAvailabilityData[]> = ref([]);
 const day: Ref<Date> = ref(props.date);
-const direction: Ref<TrainDirection> = ref(props.direction);
 const timeslots: Ref<string[]> = ref(props.timeslots);
 const noDataFromApi: Ref<boolean> = ref(false);
 
@@ -40,9 +32,17 @@ async function getTicketAvailabilityResponse(
   }
 }
 
+function formatWithLeadingZero(number: number): string {
+  const numberStr = number.toString();
+  if (number < 10) {
+    return "0" + numberStr;
+  }
+  return numberStr;
+}
+
 function getApiFormattedDate(date: Date): string {
-  const day = ("0" + date.getDate()).slice(-2);
-  const month = ("0" + date.getMonth()).slice(-2);
+  const day = formatWithLeadingZero(date.getDate());
+  const month = formatWithLeadingZero(date.getMonth() + 1);
   const year = date.getFullYear();
 
   return `${year}-${month}-${day}`;
@@ -74,7 +74,6 @@ async function loadPage() {
   } else {
     noDataFromApi.value = true;
   }
-  console.log(availabilities.value);
   isLoading.value = false;
 }
 
@@ -84,7 +83,6 @@ onBeforeMount(async () => {
 
 watch(props, async (newProps) => {
   day.value = newProps.date;
-  direction.value = newProps.direction
   noDataFromApi.value = false;
   await loadPage();
 });
