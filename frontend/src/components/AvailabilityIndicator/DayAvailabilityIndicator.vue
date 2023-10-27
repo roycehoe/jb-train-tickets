@@ -11,13 +11,21 @@ export interface TicketAvailabilityData {
   price: string;
 }
 
+enum TrainDirection {
+  SINGAPORE_TO_JB = 1,
+  JB_TO_SINGAPORE = 2
+}
+
 const props = defineProps<{
+  direction: TrainDirection;
   date: Date;
   timeslots: string[];
 }>();
+
 const isLoading: Ref<boolean> = ref(false);
 const availabilities: Ref<TicketAvailabilityData[]> = ref([]);
 const day: Ref<Date> = ref(props.date);
+const direction: Ref<TrainDirection> = ref(props.direction);
 const timeslots: Ref<string[]> = ref(props.timeslots);
 const noDataFromApi: Ref<boolean> = ref(false);
 
@@ -25,7 +33,7 @@ async function getTicketAvailabilityResponse(
   date: string
 ): Promise<Result<TicketAvailabilityData[], any>> {
   try {
-    const response = await client.get(date);
+    const response = await client.get(`jb-to-sg/${date}`);
     return Ok(response.data as TicketAvailabilityData[]);
   } catch (error) {
     return Err(error);
@@ -76,6 +84,7 @@ onBeforeMount(async () => {
 
 watch(props, async (newProps) => {
   day.value = newProps.date;
+  direction.value = newProps.direction
   noDataFromApi.value = false;
   await loadPage();
 });

@@ -1,10 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum, auto
-from bs4 import BeautifulSoup
-import requests
-
 from typing import Any, List, Optional
 
+import requests
+from bs4 import BeautifulSoup
 from pydantic import BaseModel
 
 
@@ -100,7 +99,7 @@ def get_train_tickets_response(date: str, direction: str):
     train_direction = get_train_direction(direction)
     if train_direction == TrainDirection.JB_TO_SG:
         return get_jb_to_sg_train_tickets_response(date)
-    return get_jb_to_sg_train_tickets_response(date)
+    return get_sg_to_jb_train_tickets_response(date)
 
 
 def get_train_tickets_availability(date: str, direction: str) -> list[TicketData]:
