@@ -93,14 +93,9 @@ watch(props, async (newProps) => {
     <li v-for="timeslot in timeslots">
       <span v-if="isLoading" class="loading loading-spinner w-4 h-4"></span>
       <div
-        v-else-if="isAvailableForDrinks(timeslot)"
-        class="tooltip w-4 h-4 bg-success rounded-sm"
-        :data-tip="getTooltip(timeslot)"
-      ></div>
-
-      <div
         v-else
-        class="tooltip w-4 h-4 bg-neutral rounded-sm"
+        class="tooltip w-4 h-4 rounded-sm"
+        :class="isAvailableForDrinks(timeslot) ? 'bg-success' : 'bg-neutral'"
         :data-tip="getTooltip(timeslot)"
       ></div>
     </li>

@@ -22,8 +22,18 @@ const ATLAS_TIMESLOTS = [
   "19:00",
   "20:15",
   "21:30",
-  "22:45"
-]
+  "22:45",
+];
+
+const DAY_TO_DAY_TEXT_MAP: { [key: number]: string } = {
+  0: "Su",
+  1: "Mo",
+  2: "Tu",
+  3: "We",
+  4: "Th",
+  5: "Fr",
+  6: "Sa",
+};
 
 onBeforeMount(() => {
   setDatesInMonth();
@@ -33,10 +43,20 @@ onBeforeMount(() => {
 <template>
   <table class="table table-xs">
     <thead>
-      <tr>
+      <tr class="border-b-0">
         <th></th>
         <th v-for="date in datesInMonth">
-          <p class="text-center">{{ date.getDate() }}</p>
+          <p class="text-center" :class="date.getDay() === 0 && 'ml-2'">
+            {{ DAY_TO_DAY_TEXT_MAP[date.getDay()] }}
+          </p>
+        </th>
+      </tr>
+      <tr class="border-b-0">
+        <th></th>
+        <th v-for="date in datesInMonth">
+          <p class="text-center" :class="date.getDay() === 0 && 'ml-2'">
+            {{ date.getDate() }}
+          </p>
         </th>
       </tr>
     </thead>
@@ -45,6 +65,7 @@ onBeforeMount(() => {
         <td></td>
         <td v-for="date in datesInMonth">
           <DayAvailabilityIndicator
+            :class="date.getDay() === 0 && 'ml-2'"
             :date="date"
             :timeslots="ATLAS_TIMESLOTS"
           ></DayAvailabilityIndicator>
