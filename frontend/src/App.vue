@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import AvailabilityIndicator from "@/components/availability-indicator/Index.vue";
+// import from "@/components/availability-indicator/Index.vue";
+import AvailabilityTable from "@/components/AvailabilityTable.vue";
 import MonthSelector from "./components/MonthSelector.vue";
 MonthSelector;
 </script>
@@ -11,7 +12,7 @@ MonthSelector;
         <div class="flex justify-center items-center m-16">
           <MonthSelector></MonthSelector>
         </div>
-        <AvailabilityIndicator></AvailabilityIndicator>
+        <AvailabilityTable></AvailabilityTable>
       </div>
     </div>
   </div>

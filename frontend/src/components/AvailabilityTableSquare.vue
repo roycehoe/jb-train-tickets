@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import { client } from "@/services";
 import { Err, Ok, Result } from "ts-results";
 import { Ref, onBeforeMount, ref, watch } from "vue";
-import { client } from "../../services";
 
 export interface TicketAvailabilityData {
   departure_time: string;
@@ -21,17 +21,6 @@ const day: Ref<Date> = ref(props.date);
 const timeslots: Ref<string[]> = ref(props.timeslots);
 const noDataFromApi: Ref<boolean> = ref(false);
 
-async function getTicketAvailabilityResponse(
-  date: string
-): Promise<Result<TicketAvailabilityData[], any>> {
-  try {
-    const response = await client.get(`jb-to-sg/${date}`);
-    return Ok(response.data as TicketAvailabilityData[]);
-  } catch (error) {
-    return Err(error);
-  }
-}
-
 function formatWithLeadingZero(number: number): string {
   const numberStr = number.toString();
   if (number < 10) {
@@ -48,6 +37,24 @@ function getApiFormattedDate(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
+async function getTicketAvailabilityResponse(
+  date: string
+): Promise<Result<TicketAvailabilityData[], any>> {
+  try {
+    const response = await client.get(`jb-to-sg/${date}`);
+    return Ok(response.data as TicketAvailabilityData[]);
+  } catch (error) {
+    return Err(error);
+  }
+}
+
+function getTooltipText(timeslot: string) {
+  const timeslotData = availabilities.value.filter((availability) => {
+    return availability.departure_time === timeslot;
+  });
+  return `${timeslotData[0].seat_count} seats at ${timeslot}`;
+}
+
 function isAvailableForBooking(timeslot: string) {
   const timeslotData = availabilities.value.filter((availability) => {
     return (
@@ -56,13 +63,6 @@ function isAvailableForBooking(timeslot: string) {
     );
   });
   return timeslotData.length !== 0;
-}
-
-function getTooltip(timeslot: string) {
-  const timeslotData = availabilities.value.filter((availability) => {
-    return availability.departure_time === timeslot;
-  });
-  return `${timeslotData[0].seat_count} seats at ${timeslot}`;
 }
 
 async function loadPage() {
@@ -96,7 +96,7 @@ watch(props, async (newProps) => {
         v-else
         class="tooltip w-4 h-4 rounded-sm"
         :class="isAvailableForBooking(timeslot) ? 'bg-success' : 'bg-neutral'"
-        :data-tip="getTooltip(timeslot)"
+        :data-tip="getTooltipText(timeslot)"
       ></div>
     </li>
   </ul>

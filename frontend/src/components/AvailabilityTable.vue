@@ -1,7 +1,7 @@
 <script setup lang="ts">
+import AvailabilityTableSquare from "@/components/AvailabilityTableSquare.vue";
+import { useDate } from "@/composables/useDate";
 import { onBeforeMount } from "vue";
-import { useDate } from "../../composables/useDate";
-import DayAvailabilityIndicator from "./DayAvailabilityIndicator.vue";
 const { datesInMonth, setDatesInMonth } = useDate();
 
 const TRAIN_TIMESLOTS = [
@@ -64,11 +64,11 @@ onBeforeMount(() => {
       <tr>
         <td></td>
         <td v-for="date in datesInMonth">
-          <DayAvailabilityIndicator
+          <AvailabilityTableSquare
             :class="date.getDay() === 0 && 'ml-2'"
             :date="date"
             :timeslots="TRAIN_TIMESLOTS"
-          ></DayAvailabilityIndicator>
+          ></AvailabilityTableSquare>
         </td>
       </tr>
     </tbody>

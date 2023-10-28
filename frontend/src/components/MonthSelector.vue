@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useDate } from "../composables/useDate";
+import { useDate } from "@/composables/useDate";
 
 const { displayDate, incrementCurrentMonth, decrementCurrentMonth } = useDate();
 </script>
