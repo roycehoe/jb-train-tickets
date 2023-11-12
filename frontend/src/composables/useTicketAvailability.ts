@@ -84,7 +84,30 @@ export function useTicketAvailability() {
     return timeslotData.length !== 0;
   }
 
+  function getOpacity(timeslot: string) {
+    if (ticketAvailability.value.length === 0) {
+      return 0;
+    }
+    const timeslotData = ticketAvailability.value.filter((availability) => {
+      return availability.departure_time === timeslot;
+    });
+    if (!timeslotData[0]) {
+      return 0;
+    }
+
+    const seatCount = parseInt(timeslotData[0].seat_count);
+    const ceiling = 0.8;
+    const floor = 0.2;
+    const maxSeats = 300;
+
+    if (seatCount > 300) {
+      return 1;
+    }
+    return seatCount / maxSeats / (ceiling - floor) + floor;
+  }
+
   return {
+    getOpacity,
     ticketAvailability,
     createTicketAvailabilityResponse,
     getTooltipText,

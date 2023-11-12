@@ -4,6 +4,7 @@ import { currentTravelDirection } from "@/composables/useTravelDirection";
 import { Ref, onBeforeMount, ref, watchEffect } from "vue";
 
 const {
+  getOpacity,
   ticketAvailability,
   createTicketAvailabilityResponse,
   getTooltipText,
@@ -25,6 +26,8 @@ async function loadPage() {
   isLoading.value = false;
 }
 
+function getBoxStyle() {}
+
 onBeforeMount(async () => {
   await loadPage();
 });
@@ -42,6 +45,11 @@ watchEffect(async () => {
         v-else
         class="tooltip w-4 h-4 rounded-sm"
         :class="isAvailableForBooking(timeslot) ? 'bg-success' : 'bg-neutral'"
+        :style="
+          isAvailableForBooking(timeslot)
+            ? `--tw-bg-opacity: ${getOpacity(timeslot)}`
+            : ''
+        "
         :data-tip="getTooltipText(timeslot)"
       ></div>
     </li>
