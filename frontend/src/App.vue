@@ -8,22 +8,15 @@ MonthSelector;
 
 <template>
   <div class="w-screen h-screen flex flex-col">
-    <div class="flex justify-center items-center mt-16">
-      <!-- <div>
-        <div class="flex justify-center items-center m-16">
+    <div class="flex justify-center items-center mt-16 flex-col">
+      <div class="flex gap-4 flex-col">
+        <div class="flex flex-col justify-center items-center m-8">
           <MonthSelector></MonthSelector>
         </div>
-        <div class="flex justify-center items-center m-16">
+        <AvailabilityTable></AvailabilityTable>
+        <div class="flex">
           <TravelDirectionSelector></TravelDirectionSelector>
         </div>
-        <AvailabilityTable></AvailabilityTable>
-      </div> -->
-      <div>
-        <div class="flex flex-col justify-center items-center m-16 gap-16">
-          <MonthSelector></MonthSelector>
-          <TravelDirectionSelector></TravelDirectionSelector>
-        </div>
-        <AvailabilityTable></AvailabilityTable>
       </div>
     </div>
   </div>
