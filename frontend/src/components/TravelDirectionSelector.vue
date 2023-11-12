@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useDate } from "@/composables/useDate";
+import { useTravelDirection } from "@/composables/useTravelDirection";
 
-const { displayDate, incrementCurrentMonth, decrementCurrentMonth } = useDate();
+const { changeTravelDirection, currentTravelDirection } = useTravelDirection();
 </script>
 
 <template>
   <div class="flex gap-12 justify-between w-full">
-    <button @click="decrementCurrentMonth()">
+    <button @click="changeTravelDirection()">
       <svg
         class="h-6 w-6 fill-current md:h-8 md:w-8"
         xmlns="http://www.w3.org/2000/svg"
@@ -20,9 +20,9 @@ const { displayDate, incrementCurrentMonth, decrementCurrentMonth } = useDate();
       </svg>
     </button>
 
-    <h1>{{ displayDate() }}</h1>
+    <h1>{{ currentTravelDirection.display }}</h1>
 
-    <button @click="incrementCurrentMonth()">
+    <button @click="changeTravelDirection()">
       <svg
         class="h-6 w-6 fill-current md:h-8 md:w-8"
         xmlns="http://www.w3.org/2000/svg"

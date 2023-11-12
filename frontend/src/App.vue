@@ -2,6 +2,7 @@
 // import from "@/components/availability-indicator/Index.vue";
 import AvailabilityTable from "@/components/AvailabilityTable.vue";
 import MonthSelector from "./components/MonthSelector.vue";
+import TravelDirectionSelector from "./components/TravelDirectionSelector.vue";
 MonthSelector;
 </script>
 
@@ -12,6 +13,10 @@ MonthSelector;
         <div class="flex justify-center items-center m-16">
           <MonthSelector></MonthSelector>
         </div>
+        <div class="flex justify-center items-center m-16">
+          <TravelDirectionSelector></TravelDirectionSelector>
+        </div>
+
         <AvailabilityTable></AvailabilityTable>
       </div>
     </div>
