@@ -44,18 +44,28 @@ async function getTicketAvailabilityResponse(
     const response = await client.get(`jb-to-sg/${date}`);
     return Ok(response.data as TicketAvailabilityData[]);
   } catch (error) {
+    console.error(error);
     return Err(error);
   }
 }
 
 function getTooltipText(timeslot: string) {
+  if (availabilities.value.length === 0) {
+    return "";
+  }
   const timeslotData = availabilities.value.filter((availability) => {
     return availability.departure_time === timeslot;
   });
+  if (!timeslotData[0]) {
+    return "";
+  }
   return `${timeslotData[0].seat_count} seats at ${timeslot}`;
 }
 
 function isAvailableForBooking(timeslot: string) {
+  if (availabilities.value.length === 0) {
+    return false;
+  }
   const timeslotData = availabilities.value.filter((availability) => {
     return (
       availability.departure_time === timeslot &&
@@ -69,6 +79,7 @@ async function loadPage() {
   isLoading.value = true;
   const apiFormattedDate = getApiFormattedDate(day.value);
   const response = await getTicketAvailabilityResponse(apiFormattedDate);
+  console.log(response);
   if (response.ok) {
     availabilities.value = response.val;
   } else {

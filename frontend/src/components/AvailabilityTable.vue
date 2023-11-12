@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import AvailabilityTableSquare from "@/components/AvailabilityTableSquare.vue";
+import AvailabilityTableColumn from "@/components/AvailabilityTableColumn.vue";
 import { useDate } from "@/composables/useDate";
 import { onBeforeMount } from "vue";
 const { datesInMonth, setDatesInMonth } = useDate();
@@ -64,11 +64,11 @@ onBeforeMount(() => {
       <tr>
         <td></td>
         <td v-for="date in datesInMonth">
-          <AvailabilityTableSquare
+          <AvailabilityTableColumn
             :class="date.getDay() === 0 && 'ml-2'"
             :date="date"
             :timeslots="TRAIN_TIMESLOTS"
-          ></AvailabilityTableSquare>
+          ></AvailabilityTableColumn>
         </td>
       </tr>
     </tbody>
