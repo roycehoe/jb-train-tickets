@@ -86,6 +86,8 @@ def get_ticket_data(ticket_html: str) -> list[TicketData]:
     table_data: list[TicketData] = []
     for row in rows:
         train_service = [i.text.strip() for i in row.find_all("td")]
+        if train_service == ["No trips found."]:
+            continue
         _, departure_time, arrival_time, duration, seat_count, price, _ = train_service
         table_data.append(
             TicketData(
