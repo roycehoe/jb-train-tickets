@@ -17,7 +17,7 @@ const props = defineProps<{
 }>();
 const isLoading: Ref<boolean> = ref(false);
 
-async function loadPage() {
+async function loadColumn() {
   isLoading.value = true;
   await createTicketAvailabilityResponse(
     props.date,
@@ -26,14 +26,12 @@ async function loadPage() {
   isLoading.value = false;
 }
 
-function getBoxStyle() {}
-
 onBeforeMount(async () => {
-  await loadPage();
+  await loadColumn();
 });
 
 watchEffect(async () => {
-  await loadPage();
+  await loadColumn();
 });
 </script>
 

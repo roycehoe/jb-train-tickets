@@ -1,0 +1,2 @@
+class NoTripDataException(Exception):
+    pass
