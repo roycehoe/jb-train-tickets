@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import {
   TRAVEL_DIRECTIONS,
+  currentTravelDirection,
   useTravelDirection,
 } from "@/composables/useTravelDirection";
 
-const { setTravelDirection, currentTravelDirection } = useTravelDirection();
+const { setTravelDirection } = useTravelDirection();
 </script>
 
 <template>

@@ -10,14 +10,14 @@ interface TravelDirection {
   display: string;
 }
 
-export function useTravelDirection() {
-  const currentTravelDirection: Ref<TravelDirection> = ref(
-    TRAVEL_DIRECTIONS.sgToJb
-  );
+export const currentTravelDirection: Ref<TravelDirection> = ref(
+  TRAVEL_DIRECTIONS.sgToJb
+);
 
+export function useTravelDirection() {
   function setTravelDirection(travelDirection: TravelDirection) {
     currentTravelDirection.value = travelDirection;
   }
 
-  return { currentTravelDirection, setTravelDirection };
+  return { setTravelDirection };
 }
