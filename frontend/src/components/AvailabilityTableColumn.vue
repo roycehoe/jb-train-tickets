@@ -1,8 +1,6 @@
 <script setup lang="ts">
-import { client } from "@/services";
-import { Err, Ok, Result } from "ts-results";
+import { useTicketAvailability } from "@/composables/useTicketAvailability";
 import { Ref, onBeforeMount, ref, watch } from "vue";
-
 export interface TicketAvailabilityData {
   departure_time: string;
   arrival_time: string;
@@ -11,85 +9,35 @@ export interface TicketAvailabilityData {
   price: string;
 }
 
+const {
+  ticketAvailability,
+  createTicketAvailabilityResponse,
+  getTooltipText,
+  isAvailableForBooking,
+} = useTicketAvailability();
+
 const props = defineProps<{
   date: Date;
   timeslots: string[];
 }>();
 const isLoading: Ref<boolean> = ref(false);
-const availabilities: Ref<TicketAvailabilityData[]> = ref([]);
 const day: Ref<Date> = ref(props.date);
-const timeslots: Ref<string[]> = ref(props.timeslots);
+// const timeslots: Ref<string[]> = ref(props.timeslots);
 const noDataFromApi: Ref<boolean> = ref(false);
-
-function formatWithLeadingZero(number: number): string {
-  const numberStr = number.toString();
-  if (number < 10) {
-    return "0" + numberStr;
-  }
-  return numberStr;
-}
-
-function getApiFormattedDate(date: Date): string {
-  const day = formatWithLeadingZero(date.getDate());
-  const month = formatWithLeadingZero(date.getMonth() + 1);
-  const year = date.getFullYear();
-
-  return `${year}-${month}-${day}`;
-}
-
-async function getTicketAvailabilityResponse(
-  date: string
-): Promise<Result<TicketAvailabilityData[], any>> {
-  try {
-    const response = await client.get(`jb-to-sg/${date}`);
-    return Ok(response.data as TicketAvailabilityData[]);
-  } catch (error) {
-    console.error(error);
-    return Err(error);
-  }
-}
-
-function getTooltipText(timeslot: string) {
-  if (availabilities.value.length === 0) {
-    return "";
-  }
-  const timeslotData = availabilities.value.filter((availability) => {
-    return availability.departure_time === timeslot;
-  });
-  if (!timeslotData[0]) {
-    return "";
-  }
-  return `${timeslotData[0].seat_count} seats at ${timeslot}`;
-}
-
-function isAvailableForBooking(timeslot: string) {
-  if (availabilities.value.length === 0) {
-    return false;
-  }
-  const timeslotData = availabilities.value.filter((availability) => {
-    return (
-      availability.departure_time === timeslot &&
-      availability.seat_count !== "0"
-    );
-  });
-  return timeslotData.length !== 0;
-}
 
 async function loadPage() {
   isLoading.value = true;
-  const apiFormattedDate = getApiFormattedDate(day.value);
-  const response = await getTicketAvailabilityResponse(apiFormattedDate);
-  console.log(response);
-  if (response.ok) {
-    availabilities.value = response.val;
-  } else {
-    noDataFromApi.value = true;
-  }
+  await createTicketAvailabilityResponse(day.value);
   isLoading.value = false;
 }
 
 onBeforeMount(async () => {
+  console.log("hello");
   await loadPage();
+});
+
+onBeforeMount(() => {
+  console.log("hello");
 });
 
 watch(props, async (newProps) => {
@@ -100,9 +48,10 @@ watch(props, async (newProps) => {
 </script>
 
 <template>
-  <ul v-if="!noDataFromApi">
+  <ul>
     <li v-for="timeslot in timeslots">
       <span v-if="isLoading" class="loading loading-spinner w-4 h-4"></span>
+      <div v-else class="tooltip w-4 h-4 rounded-sm"></div>
       <div
         v-else
         class="tooltip w-4 h-4 rounded-sm"
