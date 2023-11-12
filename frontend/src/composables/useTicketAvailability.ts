@@ -30,20 +30,27 @@ export function useTicketAvailability() {
   }
 
   async function _getTicketAvailabilityResponse(
-    date: Date
+    date: Date,
+    currentTravelDirection: string
   ): Promise<Result<TicketAvailabilityData[], any>> {
     try {
       const formattedDate = _getApiFormattedDate(date);
-      const response = await client.get(`jb-to-sg/${formattedDate}`);
+      const response = await client.get(
+        `${currentTravelDirection}/${formattedDate}`
+      );
       return Ok(response.data as TicketAvailabilityData[]);
     } catch (error) {
       return Err(error);
     }
   }
 
-  async function createTicketAvailabilityResponse(date: Date) {
+  async function createTicketAvailabilityResponse(
+    date: Date,
+    currentTravelDirection: string
+  ) {
     const ticketAvailabilityResponse = await _getTicketAvailabilityResponse(
-      date
+      date,
+      currentTravelDirection
     );
     if (ticketAvailabilityResponse.ok) {
       ticketAvailability.value = ticketAvailabilityResponse.val;

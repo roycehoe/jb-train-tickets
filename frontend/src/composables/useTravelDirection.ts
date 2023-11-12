@@ -1,8 +1,8 @@
 import { Ref, ref } from "vue";
 
 export const TRAVEL_DIRECTIONS = {
-  sgToJb: { api: "sg-to-jb", display: "Sg to JB" },
-  jbToSg: { api: "jb-to-sg", display: "JB to Sg" },
+  sgToJb: { api: "sg_to_jb", display: "Sg to JB" },
+  jbToSg: { api: "jb_to_sg", display: "JB to Sg" },
 };
 
 interface TravelDirection {

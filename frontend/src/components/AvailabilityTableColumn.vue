@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTicketAvailability } from "@/composables/useTicketAvailability";
+import { currentTravelDirection } from "@/composables/useTravelDirection";
 import { Ref, onBeforeMount, ref, watchEffect } from "vue";
 
 const {
@@ -17,7 +18,10 @@ const isLoading: Ref<boolean> = ref(false);
 
 async function loadPage() {
   isLoading.value = true;
-  await createTicketAvailabilityResponse(props.date);
+  await createTicketAvailabilityResponse(
+    props.date,
+    currentTravelDirection.value.api
+  );
   isLoading.value = false;
 }
 
