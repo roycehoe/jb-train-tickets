@@ -4,7 +4,9 @@ from typing import Any, List, Optional
 
 import requests
 from bs4 import BeautifulSoup
-from pydantic import BaseModel
+from pydantic import BaseModel, ValidationError
+
+from exceptions import NoTripDataException
 
 
 class TrainDirection(Enum):
@@ -48,22 +50,30 @@ DEFAULT_HEADERS = {
 }
 
 
-def get_jb_to_sg_train_tickets_response(date: str):
-    response = requests.post(
-        url=BASE_URL,
-        json={**JB_TO_SG_DEFAULT_PARAMS, "DepartDate": date},
-        headers=DEFAULT_HEADERS,
-    )
-    return GetTicketDataResponse(**response.json())
+def get_jb_to_sg_train_tickets_response(date: str) -> GetTicketDataResponse:
+    try:
+        response = requests.post(
+            url=BASE_URL,
+            json={**JB_TO_SG_DEFAULT_PARAMS, "DepartDate": date},
+            headers=DEFAULT_HEADERS,
+        )
+        return GetTicketDataResponse(**response.json())
+
+    except ValidationError:
+        raise NoTripDataException
 
 
 def get_sg_to_jb_train_tickets_response(date: str) -> GetTicketDataResponse:
-    response = requests.post(
-        url=BASE_URL,
-        json={**SG_TO_JB_DEFAULT_PARAMS, "DeparteDate": date},
-        headers=DEFAULT_HEADERS,
-    )
-    return GetTicketDataResponse(**response.json())
+    try:
+        response = requests.post(
+            url=BASE_URL,
+            json={**SG_TO_JB_DEFAULT_PARAMS, "DeparteDate": date},
+            headers=DEFAULT_HEADERS,
+        )
+        return GetTicketDataResponse(**response.json())
+
+    except ValidationError:
+        raise NoTripDataException
 
 
 def get_ticket_data(ticket_html: str) -> list[TicketData]:
@@ -97,11 +107,17 @@ def get_train_direction(direction: str) -> TrainDirection:
 
 def get_train_tickets_response(date: str, direction: str):
     train_direction = get_train_direction(direction)
-    if train_direction == TrainDirection.JB_TO_SG:
-        return get_jb_to_sg_train_tickets_response(date)
-    return get_sg_to_jb_train_tickets_response(date)
+    try:
+        if train_direction == TrainDirection.JB_TO_SG:
+            return get_jb_to_sg_train_tickets_response(date)
+        return get_sg_to_jb_train_tickets_response(date)
+    except NoTripDataException:
+        raise NoTripDataException
 
 
 def get_train_tickets_availability(date: str, direction: str) -> list[TicketData]:
-    train_tickets_response = get_train_tickets_response(date, direction)
-    return get_ticket_data(train_tickets_response.data)
+    try:
+        train_tickets_response = get_train_tickets_response(date, direction)
+        return get_ticket_data(train_tickets_response.data)
+    except NoTripDataException:
+        raise NoTripDataException

@@ -1,10 +1,11 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
+from loguru import logger
+
 import models
 from constants import IS_DEV
 from database import engine
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
 from logs import get_configured_logging
-from loguru import logger
 from routers import tickets
 
 models.Base.metadata.create_all(bind=engine)
@@ -18,6 +19,7 @@ CORS_ALLOWED_ORIGINS = [  # location where your frontend is running
     "http://127.0.0.1:5173",
 ]
 
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=CORS_ALLOWED_ORIGINS,
@@ -26,7 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-get_configured_logging()
 
+get_configured_logging()
 
 app.include_router(tickets.router)
