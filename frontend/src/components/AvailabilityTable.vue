@@ -44,7 +44,6 @@ onBeforeMount(() => {
   <table class="table table-xs">
     <thead>
       <tr class="border-b-0">
-        <th></th>
         <th v-for="date in datesInMonth">
           <p class="text-center" :class="date.getDay() === 0 && 'ml-2'">
             {{ DAY_TO_DAY_TEXT_MAP[date.getDay()] }}
@@ -52,7 +51,6 @@ onBeforeMount(() => {
         </th>
       </tr>
       <tr class="border-b-0">
-        <th></th>
         <th v-for="date in datesInMonth">
           <p class="text-center" :class="date.getDay() === 0 && 'ml-2'">
             {{ date.getDate() }}
@@ -62,7 +60,6 @@ onBeforeMount(() => {
     </thead>
     <tbody>
       <tr>
-        <td></td>
         <td v-for="date in datesInMonth">
           <AvailabilityTableColumn
             :class="date.getDay() === 0 && 'ml-2'"
